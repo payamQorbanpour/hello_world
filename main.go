@@ -1,19 +1,31 @@
 package main
 
 import (
-    "fmt"
-    "log"
-    "net/http"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
 
-    "github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
-func homeLink(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Wellcome is not correct")
-}
-
 func main() {
-    router := mux.NewRouter().StrictSlash(true)
-    router.HandleFunc("/", homeLink)
-    log.Fatal(http.ListenAndServe(":8000", router))
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		log.Fatal("$PORT must be set")
+	}
+
+	router := gin.New()
+	router.Use(gin.Logger())
+	router.LoadHTMLGlob("templates/*.tmpl.html")
+
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.tmpl.html", nil)
+	})
+
+	err := router.Run(":" + port)
+	if err != nil {
+		log.Fatal(fmt.Errorf("error on run gin router: %w", err))
+	}
 }

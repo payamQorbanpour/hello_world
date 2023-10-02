@@ -1,5 +1,6 @@
-module main.go
+module github.com/arvancloud/paas-golang-sample
 
-go 1.19
+// +heroku goVersion go1.16
+go 1.16
 
-require github.com/gorilla/mux v1.8.0
+require github.com/gin-gonic/gin v1.7.4
